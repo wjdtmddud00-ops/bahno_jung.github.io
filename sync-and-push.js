@@ -31,18 +31,13 @@ runSync()
         console.log("\n✅ 동기화 및 푸시 완료. 사이트가 곧 반영됩니다.");
       } catch (deployErr) {
         const msg = deployErr.message || "";
-        const stack = deployErr.stack || "";
-        const isAlreadyExists = msg.includes("already exists") || stack.includes("already exists");
-        const isNameTooLong = msg.includes("ENAMETOOLONG") || stack.includes("ENAMETOOLONG") || msg.includes("spawn");
-        if (isAlreadyExists) {
+        if (msg.includes("already exists")) {
           require("gh-pages").clean();
           run("npm run deploy");
           console.log("\n✅ 동기화 및 푸시 완료. 사이트가 곧 반영됩니다.");
-        } else if (isNameTooLong) {
-          console.log("\n⚠ gh-pages 배포는 건너뜀 (Windows 경로 제한).");
-          console.log("✅ 푸시는 완료됐어요. 저장소 Pages 소스를 'main' 브랜치로 쓰면 이미 반영됩니다.");
         } else {
-          throw deployErr;
+          console.log("\n⚠ gh-pages 배포 실패 (푸시는 완료됨).");
+          console.log("✅ 저장소 Pages 소스를 'main' 브랜치로 쓰면 이미 반영되어 있습니다.");
         }
       }
     } catch (e) {
