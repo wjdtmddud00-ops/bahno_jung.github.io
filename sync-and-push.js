@@ -25,21 +25,7 @@ runSync()
       run("git add -A");
       run('git commit -m "chore: collections 동기화"');
       run("git push");
-      console.log("\n🌐 GitHub Pages 배포 중...");
-      try {
-        run("npm run deploy");
-        console.log("\n✅ 동기화 및 푸시 완료. 사이트가 곧 반영됩니다.");
-      } catch (deployErr) {
-        const msg = deployErr.message || "";
-        if (msg.includes("already exists")) {
-          require("gh-pages").clean();
-          run("npm run deploy");
-          console.log("\n✅ 동기화 및 푸시 완료. 사이트가 곧 반영됩니다.");
-        } else {
-          console.log("\n⚠ gh-pages 배포 실패 (푸시는 완료됨).");
-          console.log("✅ 저장소 Pages 소스를 'main' 브랜치로 쓰면 이미 반영되어 있습니다.");
-        }
-      }
+      console.log("\n✅ 동기화 및 푸시 완료. 사이트가 곧 반영됩니다.");
     } catch (e) {
       if (e.status === 128 || (e.message && e.message.includes("not a git repository"))) {
         console.log("\n⚠ 이 폴더는 Git 저장소가 아니거나 원격이 없어 푸시를 건너뜁니다.");
