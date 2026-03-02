@@ -26,6 +26,9 @@ runSync()
       run('git commit -m "chore: collections 동기화"');
       run("git push");
       console.log("\n🌐 GitHub Pages 배포 중...");
+      try {
+        require("gh-pages").clean();
+      } catch (_) {}
       run("npm run deploy");
       console.log("\n✅ 동기화 및 푸시 완료. 사이트가 곧 반영됩니다.");
     } catch (e) {
