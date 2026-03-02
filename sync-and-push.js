@@ -27,9 +27,15 @@ runSync()
       run("git push");
       console.log("\n🌐 GitHub Pages 배포 중...");
       try {
-        require("gh-pages").clean();
-      } catch (_) {}
-      run("npm run deploy");
+        run("npm run deploy");
+      } catch (deployErr) {
+        if (deployErr.message && deployErr.message.includes("already exists")) {
+          require("gh-pages").clean();
+          run("npm run deploy");
+        } else {
+          throw deployErr;
+        }
+      }
       console.log("\n✅ 동기화 및 푸시 완료. 사이트가 곧 반영됩니다.");
     } catch (e) {
       if (e.status === 128 || (e.message && e.message.includes("not a git repository"))) {
