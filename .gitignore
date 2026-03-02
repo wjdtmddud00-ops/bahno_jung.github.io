@@ -20,6 +20,11 @@ desktop.ini
 .env
 .env.local
 
+# Installer build output (exceeds GitHub 100MB file limit)
+웹사이트 설치 프로그램/
+
+
+
 
 
 
