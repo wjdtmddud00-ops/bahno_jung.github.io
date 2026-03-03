@@ -30,9 +30,8 @@
       <div class="header-inner">
         <div>
           <h1 class="site-title">
-            <a href="index.html" class="site-title-link">Jung In Hwan</a>
+            <a href="index.html" class="site-title-link">Bahno Jung</a>
           </h1>
-          <p class="site-subtitle">Photography</p>
         </div>
       </div>
     </header>
@@ -42,6 +41,29 @@
     </main>
 
     <script>
+      const MONDRIAN_COLORS = ["#FFD000", "#E53935", "#1565C0", "#00C853", "#FF4081"];
+
+      function colorizeLetters(element) {
+        const text = element.textContent || "";
+        element.textContent = "";
+        let prevColor = null;
+        for (const ch of text) {
+          if (ch === " ") {
+            element.appendChild(document.createTextNode(" "));
+            continue;
+          }
+          const choices = prevColor
+            ? MONDRIAN_COLORS.filter((c) => c !== prevColor)
+            : MONDRIAN_COLORS;
+          const color = choices[Math.floor(Math.random() * choices.length)];
+          prevColor = color;
+          const span = document.createElement("span");
+          span.textContent = ch;
+          span.style.color = color;
+          element.appendChild(span);
+        }
+      }
+
       // 컬렉션 메뉴 로드 (WALL, COLLECTION#1, COLLECTION#2)
       async function loadSidebar() {
         const nav = document.getElementById("collection-nav");
@@ -71,6 +93,7 @@
             if (collection.id.startsWith("_")) {
               link.classList.add("wall-link");
             }
+            colorizeLetters(link);
             nav.appendChild(link);
           });
         } catch (e) {}

@@ -26,9 +26,8 @@
       <div class="header-inner">
         <div>
           <h1 class="site-title">
-            <a href="index.html" class="site-title-link">Jung In Hwan</a>
+            <a href="index.html" class="site-title-link">Bahno Jung</a>
           </h1>
-          <p class="site-subtitle">Photography</p>
         </div>
       </div>
     </header>
@@ -71,6 +70,29 @@
     </div>
 
     <script>
+      const MONDRIAN_COLORS = ["#FFD000", "#E53935", "#1565C0", "#00C853", "#FF4081"];
+
+      function colorizeLetters(element) {
+        const text = element.textContent || "";
+        element.textContent = "";
+        let prevColor = null;
+        for (const ch of text) {
+          if (ch === " ") {
+            element.appendChild(document.createTextNode(" "));
+            continue;
+          }
+          const choices = prevColor
+            ? MONDRIAN_COLORS.filter((c) => c !== prevColor)
+            : MONDRIAN_COLORS;
+          const color = choices[Math.floor(Math.random() * choices.length)];
+          prevColor = color;
+          const span = document.createElement("span");
+          span.textContent = ch;
+          span.style.color = color;
+          element.appendChild(span);
+        }
+      }
+
       // URL에서 컬렉션 파라미터 가져오기
       const urlParams = new URLSearchParams(window.location.search);
       const collectionId = urlParams.get("collection") || "all";
@@ -218,10 +240,14 @@
           const res = await fetch("collections.json", { cache: "no-store" });
           if (!res.ok) return;
           const collections = await res.json();
-          const c = Array.isArray(collections) && collections.find((x) => x.id === collectionId);
+          const c =
+            Array.isArray(collections) &&
+            collections.find((x) => x.id === collectionId);
           titleEl.textContent = c ? displayName(c.id) : displayName(collectionId);
+          colorizeLetters(titleEl);
         } catch (e) {
           titleEl.textContent = displayName(collectionId);
+          colorizeLetters(titleEl);
         }
       }
 
