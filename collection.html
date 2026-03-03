@@ -101,12 +101,15 @@
       let imageList = [];
       let currentImageIndex = -1;
 
+      // 현재 페이지 기준 베이스 경로 (로컬: /, GitHub Pages: /bahno_jung.github.io/ 등)
+      const basePath = window.location.pathname.replace(/\/[^/]*$/, "/") || "/";
+
       // 현재 컬렉션 id + 파일명으로 이미지 URL 생성 (폴더명 변경 후에도 항상 올바른 경로)
       function imageUrlForItem(colId, item) {
         if (!item || !item.src) return "";
         const filename = item.src.split("/").pop() || item.src;
         const path = "collections/" + encodeURIComponent(colId) + "/" + encodeURIComponent(filename);
-        return window.location.origin + "/" + path;
+        return window.location.origin + basePath + path;
       }
 
       // 컬렉션 폴더의 images.json을 불러와 갤러리를 채우는 스크립트
