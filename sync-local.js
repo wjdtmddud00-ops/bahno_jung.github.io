@@ -1,6 +1,6 @@
 /**
  * collections 변경 감지 → images.json·collections.json 갱신만 (Git/서버 없음)
- * 폴더 이름이 _ 로 시작하면 "맨 위 + 간격" 컬렉션으로 표시됩니다.
+ * 컬렉션 순서는 폴더 생성 시간 기준으로 정렬됩니다.
  */
 
 const fs = require("fs").promises;
@@ -9,8 +9,6 @@ const { execSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname);
 const IMAGE_EXT = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
-/** 맨 위에 간격을 두는 컬렉션: 폴더 이름이 이 문자로 시작 */
-const TOP_COLLECTION_PREFIX = "_";
 
 function isImage(name) {
   return IMAGE_EXT.includes(path.extname(name).toLowerCase());
@@ -49,14 +47,14 @@ async function getCollectionDirsByCreationOrder() {
     const withBirth = await Promise.all(
       dirs.map(async (e) => {
         const stat = await fs.stat(path.join(dir, e.name));
-        // 실사용 정렬: 최근 반영된(수정된) 컬렉션이 위로 오도록 mtime 우선
-        const t = (stat.mtime && stat.mtime.getTime)
-          ? stat.mtime.getTime()
-          : ((stat.birthtime && stat.birthtime.getTime) ? stat.birthtime.getTime() : 0);
+        // 폴더 생성 시간 기준 정렬 (생성 시간이 없으면 mtime 대체)
+        const t = (stat.birthtime && stat.birthtime.getTime)
+          ? stat.birthtime.getTime()
+          : ((stat.mtime && stat.mtime.getTime) ? stat.mtime.getTime() : 0);
         return { id: e.name, birthtime: t };
       })
     );
-    // 최신 생성 컬렉션이 위로 오도록 정렬 (오래된 것은 아래)
+    // 최근 생성된 컬렉션이 위, 먼저 생성된 컬렉션이 아래
     withBirth.sort((a, b) => b.birthtime - a.birthtime);
     return withBirth.map((d) => d.id);
   } catch {
@@ -186,10 +184,10 @@ async function runSync() {
     console.log(`📁 새 컬렉션 추가: ${id}`);
   }
 
-  const creationOrdered = collectionDirsByCreation.filter((id) => byId.has(id)).map((id) => byId.get(id));
-  const prefixFirst = creationOrdered.filter((c) => c.id.startsWith(TOP_COLLECTION_PREFIX));
-  const rest = creationOrdered.filter((c) => !c.id.startsWith(TOP_COLLECTION_PREFIX));
-  const ordered = [...prefixFirst, ...rest].map((c) => ({
+  const creationOrdered = collectionDirsByCreation
+    .filter((id) => byId.has(id))
+    .map((id) => byId.get(id));
+  const ordered = creationOrdered.map((c) => ({
     ...c,
     path: `collection.html?collection=${encodeURIComponent(c.id)}`,
   }));
