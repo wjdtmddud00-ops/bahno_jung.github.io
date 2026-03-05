@@ -56,6 +56,16 @@ runSync()
         );
         return;
       }
+      if (e.status === 128) {
+        try {
+          getText("git rev-parse --abbrev-ref --symbolic-full-name @{u}");
+        } catch {
+          console.log(
+            "\n⚠ upstream 브랜치가 없습니다. 한 번만 아래 명령을 실행하세요:\n   git push --set-upstream origin main"
+          );
+          return;
+        }
+      }
       if (e.status === 128 || (e.message && e.message.includes("not a git repository"))) {
         console.log("\n⚠ 이 폴더는 Git 저장소가 아니거나 원격이 없어 푸시를 건너뜁니다.");
       } else {
