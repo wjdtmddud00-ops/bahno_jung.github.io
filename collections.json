@@ -1,12 +1,12 @@
 [
   {
-    "id": "Ant",
-    "name": "Ant",
-    "path": "collection.html?collection=Ant"
-  },
-  {
     "id": "Colors of the Grow-rings",
     "name": "Colors of the Grow-rings",
     "path": "collection.html?collection=Colors%20of%20the%20Grow-rings"
+  },
+  {
+    "id": "Ant",
+    "name": "Ant",
+    "path": "collection.html?collection=Ant"
   }
 ]

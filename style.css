@@ -543,11 +543,11 @@ main.main-blank {
 @media (max-width: 640px) {
   :root {
     --logo-block-height: 80px;
-    --footer-reserve: 280px;
+    --footer-reserve: 320px;
   }
 
   body.main-page .collection-nav {
-    bottom: calc(env(safe-area-inset-bottom) + var(--logo-block-height) + 0.75rem);
+    bottom: calc(env(safe-area-inset-bottom) + var(--logo-block-height) + 1.6rem);
     padding: 0 0.75rem 0.75rem 0.75rem;
   }
 
@@ -559,6 +559,7 @@ main.main-blank {
   /* 모바일: 메인 페이지 헤더를 컬렉션 페이지와 동일하게 */
   body.main-page .site-header {
     margin-left: 0;
+    bottom: calc(env(safe-area-inset-bottom) + 0.8rem);
   }
 
   body.main-page .site-header .header-inner {
@@ -600,7 +601,7 @@ main.main-blank {
   .collection-back-to-main {
     font-size: 2.4rem;
     left: 50%;
-    bottom: 0.2rem;
+    bottom: calc(env(safe-area-inset-bottom) + 1rem);
     padding: 0 0.2em;
   }
 
