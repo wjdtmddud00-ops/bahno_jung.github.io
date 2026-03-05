@@ -212,6 +212,7 @@ body.main-page .collection-nav .wall-link {
   text-transform: none;
   margin: 0;
   line-height: 1.05;
+  white-space: nowrap;
 }
 
 .site-title-link {
@@ -253,6 +254,12 @@ body.collection-page main.main-full {
 
 body.collection-page {
   font-family: var(--font-bauhaus);
+  padding-bottom: 1.5rem;
+}
+
+/* 컬렉션 페이지에서는 하단 고정 로고 숨김 */
+body.collection-page .site-header {
+  display: none;
 }
 
 /* 컬렉션 제목: 폴더명과 동일하게 표시(대소문자 그대로) */
@@ -264,6 +271,44 @@ body.collection-page {
   margin: 0 0 1.5rem;
   color: #111111;
   white-space: nowrap;
+}
+
+/* 컬렉션 페이지 하단 도달 시 표시되는 메인 이동 버튼 */
+.collection-back-to-main {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, 8px);
+  bottom: 0.35rem;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+  color: #111111;
+  font-family: var(--font-bauhaus);
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  letter-spacing: 0.02em;
+  -webkit-text-stroke: 0.8px #111111;
+  text-shadow: 0 0 0 #111111;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 60;
+  padding: 0 0.2em;
+}
+
+.collection-back-to-main:hover {
+  color: #444444;
+}
+
+.collection-back-to-main.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
 }
 
 /* 메인 화면: 로고 아래 흰 공백 */
@@ -480,6 +525,12 @@ main.main-blank {
     width: calc(100% - 200px);
   }
 
+  body.collection-page main.main-full {
+    margin-left: 0;
+    width: 100%;
+    padding-inline: 1rem;
+  }
+
   .header-inner {
     padding-inline: 1rem;
   }
@@ -502,7 +553,7 @@ main.main-blank {
 
   body.main-page .collection-nav a,
   .sidebar-link {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   /* 모바일: 메인 페이지 헤더를 컬렉션 페이지와 동일하게 */
@@ -511,7 +562,7 @@ main.main-blank {
   }
 
   body.main-page .site-header .header-inner {
-    padding: 1rem 0.75rem;
+    padding: 0.7rem 0.5rem;
   }
 
   body.main-page main {
@@ -520,23 +571,37 @@ main.main-blank {
   }
 
   main {
-    margin-left: 160px;
+    margin-left: 0;
     margin-right: auto;
-    width: calc(100% - 160px);
+    width: 100%;
   }
 
   .site-title {
-    font-size: 2.2rem;
-    letter-spacing: 0.08em;
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
   }
 
   .collection-title {
-    font-size: clamp(1.15rem, 4.2vw, 2rem);
-    letter-spacing: 0.04em;
+    font-size: clamp(0.95rem, 3.8vw, 1.4rem);
+    letter-spacing: 0.02em;
     white-space: normal;
     overflow-wrap: anywhere;
     text-align: center;
-    padding: 0 0.18em;
+    padding: 0 0.3em;
+  }
+
+  body.collection-page main.main-full {
+    margin-left: 0;
+    width: 100%;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .collection-back-to-main {
+    font-size: 2.4rem;
+    left: 50%;
+    bottom: 0.2rem;
+    padding: 0 0.2em;
   }
 
   /* 모바일에서도 clamp로 자동 조절 */

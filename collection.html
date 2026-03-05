@@ -44,6 +44,8 @@
       <section class="gallery" aria-label="사진 갤러리" id="gallery"></section>
     </main>
 
+    <a href="index.html" class="collection-back-to-main" id="back-to-main" aria-label="메인 페이지로 이동">←</a>
+
     <!-- 클릭 시 확대 보기용 라이트박스 -->
     <div class="lightbox" id="lightbox" aria-hidden="true">
       <div class="lightbox-backdrop" data-lightbox-close></div>
@@ -107,6 +109,7 @@
       // 전역 변수: 이미지 배열과 현재 인덱스
       let imageList = [];
       let currentImageIndex = -1;
+      const backToMainEl = document.getElementById("back-to-main");
 
       // 현재 페이지 기준 베이스 경로 (로컬: /, GitHub Pages: /bahno_jung.github.io/ 등)
       const basePath = window.location.pathname.replace(/\/[^/]*$/, "/") || "/";
@@ -239,6 +242,15 @@
         }
       }
 
+      function updateBackToMainVisibility() {
+        if (!backToMainEl) return;
+        const threshold = 6;
+        const atBottom =
+          window.innerHeight + window.scrollY >=
+          document.documentElement.scrollHeight - threshold;
+        backToMainEl.classList.toggle("is-visible", atBottom);
+      }
+
       // 컬렉션 제목 표시: 폴더명(id)과 동일, _ 로 시작하면 _ 만 제거
       function displayName(id) {
         return id && id.startsWith("_") ? id.slice(1) : (id || "");
@@ -331,8 +343,13 @@
         });
       })();
 
+      window.addEventListener("scroll", updateBackToMainVisibility, { passive: true });
+      window.addEventListener("resize", updateBackToMainVisibility);
+
       loadGallery();
       setCollectionTitle();
+      window.addEventListener("load", updateBackToMainVisibility);
+      setTimeout(updateBackToMainVisibility, 250);
     </script>
   </body>
 </html>
