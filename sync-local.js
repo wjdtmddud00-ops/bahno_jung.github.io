@@ -16,6 +16,21 @@ function isImage(name) {
   return IMAGE_EXT.includes(path.extname(name).toLowerCase());
 }
 
+function getLeadingNumber(name) {
+  const base = path.parse(name).name;
+  const m = base.match(/^(\d+)/);
+  return m ? Number.parseInt(m[1], 10) : null;
+}
+
+function sortImageNamesByNumericDesc(a, b) {
+  const an = getLeadingNumber(a);
+  const bn = getLeadingNumber(b);
+  if (an !== null && bn !== null && an !== bn) return bn - an;
+  if (an !== null && bn === null) return -1;
+  if (an === null && bn !== null) return 1;
+  return b.localeCompare(a, "en", { numeric: true });
+}
+
 async function getCollectionDirs() {
   const dir = path.join(ROOT, "collections");
   try {
@@ -34,11 +49,15 @@ async function getCollectionDirsByCreationOrder() {
     const withBirth = await Promise.all(
       dirs.map(async (e) => {
         const stat = await fs.stat(path.join(dir, e.name));
-        const t = (stat.birthtime && stat.birthtime.getTime) ? stat.birthtime.getTime() : (stat.mtime && stat.mtime.getTime ? stat.mtime.getTime() : 0);
+        // 실사용 정렬: 최근 반영된(수정된) 컬렉션이 위로 오도록 mtime 우선
+        const t = (stat.mtime && stat.mtime.getTime)
+          ? stat.mtime.getTime()
+          : ((stat.birthtime && stat.birthtime.getTime) ? stat.birthtime.getTime() : 0);
         return { id: e.name, birthtime: t };
       })
     );
-    withBirth.sort((a, b) => a.birthtime - b.birthtime);
+    // 최신 생성 컬렉션이 위로 오도록 정렬 (오래된 것은 아래)
+    withBirth.sort((a, b) => b.birthtime - a.birthtime);
     return withBirth.map((d) => d.id);
   } catch {
     return [];
@@ -124,7 +143,7 @@ async function generateCollectionImagesJson(collectionId) {
   const files = entries
     .filter((e) => e.isFile() && e.name !== "images.json" && isImage(e.name))
     .map((e) => e.name)
-    .sort((a, b) => b.localeCompare(a, "en", { numeric: true }));
+    .sort(sortImageNamesByNumericDesc);
   const data = files.map((file) => ({
     src: `collections/${collectionId}/${file}`,
     alt: path.parse(file).name,
